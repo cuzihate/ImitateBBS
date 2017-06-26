@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>抽屉新热榜-{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    <script type="text/javascript" src="{% static 'js/jquery-1.12.4.js' %}"></script>
+<script src="{% static 'js/jquery.cookie.js' %}"></script>
+</head>
+<body>
+    <div class="head-band">
+        <!-- 最上面 -->
+        <div class="head-content">
+            <a href="/" class="dig-logo"></a>
+            <div class="action-menu">
+                <a href="/modules/1/" class="tb">全部</a>
+                <a href="/modules/2/" class="tb">42区</a>
+                <a href="/modules/3/" class="tb">段子</a>
+                <a href="/modules/4/" class="tb">图片</a>
+                <a href="/modules/5/" class="tb">挨踢1024</a>
+                <a href="/modules/6/" class="tb">你问我答</a>
+            </div>
+            <div class="key-search">
+                <form action="#" method="post">
+                    <input type="text" class="search-txt" />
+                    <a href="javascript:void(0)" class="i">
+                        <span class="icon"></span>
+                    </a>
+                </form>
+            </div>
+            <div class="action-nav">
+                {% if request.session.email %}
+                    <a>{{ request.session.email }}</a>
+                    <a href="javascript:void(0)" id="log_out">退出</a>
+                {% else %}
+                <a href="javascript:void(0)" onclick="ShowModel(this)">
+                    注册
+                </a>
+                <a href="javascript:void(0)" onclick="ShowModel(this)">
+                    登录
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="main-content-band">
+        <div class="main-content">
+            <div class="content-L">
+                <div class="nav-top-area">
+                    <div class="child-nav">
+                        <a href="javascript:void(0)" class="hotbtn active icons">最热</a>
+                        <a href="javascript:void(0)">最新</a>
+                    </div>
+                    {% block paixu %}
+
+                    {% endblock %}
+                    <a href="javascript:void(0)" class="publish-btn">
+                        <span class="ico n1"></span>
+                        <span class="n2">发布</span>
+                    </a>
+                </div>
+                <div class="content-list">
+                    {% block items %}
+
+                    {% endblock %}
+                </div>
+            </div>
+            <div class="content-R">
+
+            </div>
+        </div>
+    </div>
+    <div class="footer-band">
+        <div class="module-login-mask hide" id="module-login-mask">
+            <div class="module-login-container">
+                <div class="box-register" style="padding-left: 350px;">
+                    <!-- 登录框 -->
+                    <div class="box-login">
+                        <div class="header" style="border-radius:5px 0 0 0;">登录</div>
+                        <div class="body-login" style="border-radius:0 0 0 5px;">
+                            <div class="tab-box">
+                                <span class="tab-emaillogin active" style="margin-right:10px;">邮箱登录</span>
+                            </div>
+                            <div class="box-emaillogin">
+                                <div class="err-msg" id="err-msg-login"></div>
+                                <!-- 登录form -->
+                                <form class="form-emaillogin" id="login_form">
+                                    {% csrf_token %}
+                                    <div class="pr">
+                                        <input type="text" name="email" placeholder="邮箱" class="email">
+                                    </div>
+                                    <div class="pr">
+                                        <input type="password" name="password" placeholder="密码" class="mbpwd">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="box-btn">
+                                <div style="position:relative;margin-bottom:20px;">
+                                    <span>
+                                        <input type="checkbox" class="keeplogin" value="1" checked="">
+                                        一个月内自动登录
+                                    </span>
+                                    <span class="fgtpwd">
+                                        <a href="javascript:void(0)">忘记密码?</a>
+                                    </span>
+                                </div>
+                                <div>
+                                    <div class="btn btn-login pub-icons pub-btn">
+                                        <span id="login_button">登录</span>
+                                        <span id="login_button_to" class="hide">
+                                            <img src="{% static 'image/loading.gif' %}">
+                                            正在登录
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 注册框 -->
+                    <div class="header box-active" style="border-radius:0 5px 0 0;">
+                        <span>注册</span>
+                        <div style="position:absolute;right:8px;top:8px;width:15px;height:15px;">
+                            <div class="btn-close icons dialog-btn-close" id="btn_close"></div>
+                        </div>
+                    </div>
+                    <div class="body-register" style="border-radius:0 0 5px 0;">
+                        <div class="step-box">
+                            <span class="step-active">邮箱注册</span>
+                        </div>
+                        <div class="box-register-email">
+                            <div class="err-msg" id="err-msg-register"></div>
+                            <!-- register form -->
+                            <form id="register_form">
+                            {% csrf_token %}
+                                <div class="pr">
+                                    <input type="text" placeholder="邮箱" class="rgemail" name="email" id="rgemail" />
+                                </div>
+                                <div class="pr">
+                                    <input type="text" placeholder="验证码" name="code" style="width:120px;margin-right:6px;" class="rgcode" />
+                                    <div class="btn btn-getcode" id="btn-getcode">获取验证码</div>
+                                </div>
+                                <div class="pr">
+                                    <input type="password" placeholder="密码" class="rgpwd" name="password">
+                                </div>
+
+                            </form>
+                            <div>
+                                <div class="btn btn-register pub-icons pub-btn">
+                                    <span id="register_button">注册</span>
+                                    <span id="register_button_to" class="hide">
+                                        <img src="{% static 'image/loading.gif' %}">
+                                        正在注册
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function ShowModel(ths){
+            $('#module-login-mask').removeClass('hide');
+        }
+
+        $('#btn_close').click(function () {
+            $('#module-login-mask').addClass('hide');
+        });
+
+        $('#login_button').click(function(){
+            $('#login_button').addClass('hide');
+            $('#login_button_to').removeClass('hide');
+            $.ajax({
+                url: '{% url "login" %}',
+                type: 'POST',
+                data: $('#login_form').serialize(),
+                success: function(ret){
+                    ret = JSON.parse(ret);
+                    if(ret.state){
+                        location.href='/';
+                    }else{
+                        $('#login_button').removeClass('hide');
+                        $('#login_button_to').addClass('hide');
+                        if(ret.errors.email){
+                            $('#err-msg-login').text(ret.errors.email[0].messages[0]);
+                        }else if(ret.password){
+                            $('#err-msg-login').text(ret.errors.password[0].messages[0]);
+                        }else{
+                            $('#err-msg-login').text(ret.errors.__all__[0].messages[0]);
+                        }
+                    }
+                }
+            })
+        });
+
+        $('#log_out').click(function(){
+            $.ajax({
+                url: '{% url "login" %}',
+                type: 'GET',
+                success: function (ret) {
+                    location.href='/';
+                }
+            })
+        });
+
+        // 去cookie中获取值
+        var csrftoken = $.cookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $('#btn-getcode').click(function(){
+            $('#btn-getcode').addClass('btn-disable');
+            var time = 30;
+            var interval = setInterval(function(){
+                time -= 1;
+                $('#btn-getcode').text('已发送('+time+')');
+                if(time <= 0){
+                    clearInterval(interval);
+                    $('#btn-getcode').text('获取验证码');
+                    $('#btn-getcode').removeClass('btn-disable');
+                }
+            }, 1000);
+            $.ajax({
+                url: '{% url "send_email" %}',
+                type: 'POST',
+                data: {'email': $('#rgemail').val()},
+                success: function(ret){
+                    ret = JSON.parse(ret);
+                    if(ret.state){
+                        $('#err-msg-register').text('邮件发送成功~');
+                        setTimeout(function(){
+                            $('#err-msg-register').empty()
+                        }, 3000);
+                    }
+                }
+            })
+        });
+
+        $('#register_button').click(function(){
+            $('#register_button').addClass('hide');
+            $('#register_button_to').removeClass('hide');
+            $.ajax({
+                url: '{% url "register" %}',
+                type: 'POST',
+                data: $('#register_form').serialize(),
+                success: function(ret){
+                    ret = JSON.parse(ret);
+                    $('#register_button').removeClass('hide');
+                    $('#register_button_to').addClass('hide');
+                    if(ret.state){
+                        $('#err-msg-register').text('注册成功，请从左侧登录~')
+                    }else{
+                        if(ret.errors.email){
+                            $('#err-msg-register').text(ret.errors.email[0].messages[0])
+                        }else if(ret.code){
+                            $('#err-msg-register').text(ret.errors.code[0].messages[0])
+                        }else{
+                            $('#err-msg-register').text(ret.errors.__all__[0].messages[0])
+                        }
+                    }
+                }
+            })
+        });
+
+
+    </script>
+    {% block script %}
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,44 @@
+{% extends "_base.html" %}
+{% load staticfiles %}
+{% block title %}{{ articles_obj.0.module }}{% endblock %}
+
+
+{% block items %}
+{% for article in articles_obj %}
+<div class="item">
+    <div class="news-pic">
+        <img src="" style="display: inline;">
+    </div>
+    <div class="news-content">
+        <div class="part1">
+            <a href="javascript:void(0)" class="show-content">{{ article.title }}</a>
+            <a href="javascript:void(0)" class="n2">
+                <span>{{ article.module }}</span>
+            </a>
+        </div>
+        <div class="part2">
+            <a href="javascript:void(0)" class="digg-a" title="赞">
+                <span class="hand-icon icon-digg"></span>
+                <b>{{ article.favour_count }}</b>
+            </a>
+            <a href="javascript:void(0)" class="discus-a" title="评论">
+                <span class="hand-icon icon-discus"></span>
+                <b>{{ article.comment_count }}</b>
+            </a>
+            <a href="javascript:void(0)" class="user-a" title="用户">
+                <span>
+                    <img src="#" />
+                </span>
+                <b>{{ article.user.username }}</b>
+            </a>
+            <span class="left time-into">
+                <a class="time-a" href="javascript:void(0)" target="_blank">
+                    <b>15分钟前</b>
+                </a>
+                <i>入热榜</i>
+            </span>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

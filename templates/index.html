@@ -1,0 +1,86 @@
+{% extends "_base.html" %}
+{% load staticfiles %}
+{% load xxoo %}
+{% block title %}主页{% endblock %}
+{% block paixu %}
+<div class="sort-nav">
+    <a href="javascript:void(0)" class="active hotbtn">即时排序</a>
+    <a href="javascript:void(0)">24小时</a>
+    <a href="javascript:void(0)">3天</a>
+</div>
+{% endblock %}
+
+{% block items %}
+{% for article in articles_obj %}
+<div class="item">
+    <div class="news-pic">
+        <img src="" style="display: inline;">
+    </div>
+    <div class="news-content">
+        <div class="part1">
+            <a href="javascript:void(0)" class="show-content">{{ article.title }}</a>
+            <a href="javascript:void(0)" class="n2">
+                <span>{{ article.module }}</span>
+            </a>
+        </div>
+        <div class="part2">
+            <a href="javascript:void(0)" class="digg-a" title="赞" onclick="Favorite(this);" article_id="{{ article.id }}">
+                <span class="hand-icon icon-digg {% if article.id|for_in:favour_ids %}vote-actived{% endif %}"></span>
+                <b>{{ article.favour_count }}</b>
+            </a>
+            <a href="javascript:void(0)" class="discus-a" title="评论">
+                <span class="hand-icon icon-discus"></span>
+                <b>{{ article.comment_count }}</b>
+            </a>
+            <a href="javascript:void(0)" class="user-a" title="用户">
+                <span>
+                    <img src="#" />
+                </span>
+                <b>{{ article.user.username }}</b>
+            </a>
+            <span class="left time-into">
+                <a class="time-a" href="javascript:void(0)" target="_blank">
+                    <b>15分钟前</b>
+                </a>
+                <i>入热榜</i>
+            </span>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+{% block script %}
+<script>
+    function Favorite(ths) {
+        console.log($(ths).attr('article_id'));
+        if('{{ request.session.email }}'){
+{#            $.ajax({#}
+{#                url: '{% url "favour" %}',#}
+{#                type: 'POST',#}
+{#                date: {'article_id': $(ths).attr('article_id'), 'k1': 'v1'},#}
+{#                success: function(ret){#}
+{#                    console.log(ret);#}
+{#                }#}
+{#            })#}
+{#            用ajax提交为啥后台获取不到数据？#}
+            $.post('{% url "favour" %}', {'article_id': $(ths).attr('article_id')},
+                function(ret){
+                    console.log(ret);
+                    ret = JSON.parse(ret);
+                    if(ret.state){
+                        console.log($(ths).attr('article_id'));
+                        $(ths).children().first().toggleClass('vote-actived');
+                        location.reload();
+                    }else{
+                        $('#module-login-mask').removeClass('hide');
+                    }
+                }
+            )
+        }else{
+            $('#module-login-mask').removeClass('hide');
+        }
+    }
+
+</script>
+{% endblock %}
